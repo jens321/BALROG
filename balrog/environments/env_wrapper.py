@@ -1,4 +1,5 @@
 import gym
+from nle_code_wrapper.wrappers.nle_code_wrapper import NLECodeWrapper
 
 
 class EnvWrapper(gym.Wrapper):
@@ -80,13 +81,16 @@ class EnvWrapper(gym.Wrapper):
             raise ValueError(f"Unknown environment: {self.env_namee}")
 
     def check_action_validity(self, candidate_action):
-        valid_action = None
-        if candidate_action in self.env.language_action_space:
-            valid_action = candidate_action
+        if isinstance(self.env, NLECodeWrapper):
+            return candidate_action
         else:
-            valid_action = self.env.default_action
-            self.failed_candidates.append(candidate_action)
-        return valid_action
+            valid_action = None
+            if candidate_action in self.env.language_action_space:
+                valid_action = candidate_action
+            else:
+                valid_action = self.env.default_action
+                self.failed_candidates.append(candidate_action)
+            return valid_action
 
     def get_stats(self):
         return self.env.get_stats()
