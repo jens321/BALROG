@@ -14,8 +14,8 @@ from .render_rgb import rgb_render_image
 
 
 class NLELanguageWrapper(language_wrapper.NLELanguageWrapper):
-    def __init__(self, env, vlm=False, skip_more=False):
-        super().__init__(env, use_language_action=True)
+    def __init__(self, env, vlm=False, skip_more=False, use_language_action: bool = True):
+        super().__init__(env, use_language_action=use_language_action)
         self.nle_language = nle_language_obsv.NLELanguageObsv()
         self.language_action_space = self.create_action_space()
         self.env = env
