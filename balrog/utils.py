@@ -7,6 +7,7 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
+import wandb
 import google.generativeai as genai
 import openai
 
@@ -210,3 +211,15 @@ def setup_environment(
     os.environ["OPENAI_API_KEY"] = secrets[openai_tag]
     if organization is not None:
         openai.organization = secrets[organization]
+
+def wandb_save_artifact(config, output_dir):
+    """Log the summary data as a W&B artifact.
+
+    Args:
+        config: Configuration object containing W&B project settings.
+    """
+    wandb.init(project=config.wandb.project_name, entity=config.wandb.entity_name, name=config.wandb.run_name)
+    with open(os.path.join(output_dir, "summary.json"), "r") as f:
+        json_data = json.load(f)
+    wandb.log(json_data)
+    wandb.finish()
