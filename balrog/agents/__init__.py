@@ -5,6 +5,8 @@ from .chain_of_thought import ChainOfThoughtAgent
 from .custom import CustomAgent
 from .dummy import DummyAgent
 from .naive import NaiveAgent
+from .code_naive import CodeNaiveAgent
+from .code_cot import CodeCotAgent
 
 
 class AgentFactory:
@@ -47,6 +49,10 @@ class AgentFactory:
             return DummyAgent(client_factory, prompt_builder)
         elif self.config.agent.type == "custom":
             return CustomAgent(client_factory, prompt_builder)
+        elif self.config.agent.type == "code_naive":
+            return CodeNaiveAgent(client_factory, prompt_builder, self.config)
+        elif self.config.agent.type == "code_cot":
+            return CodeCotAgent(client_factory, prompt_builder, self.config)
 
         else:
             raise ValueError(f"Unknown agent type: {self.config.agent}")
