@@ -11,7 +11,7 @@ from omegaconf import DictConfig
 
 from balrog.agents import AgentFactory
 from balrog.evaluator import EvaluatorManager
-from balrog.utils import collect_and_summarize_results, print_summary_table, setup_environment
+from balrog.utils import collect_and_summarize_results, print_summary_table, setup_environment, wandb_save_artifact
 
 
 @contextmanager
@@ -60,6 +60,9 @@ def main(config: DictConfig):
     # Collect and summarize results
     summary = collect_and_summarize_results(output_dir)
     print_summary_table(summary)
+
+    if config.eval.wandb_save:
+        wandb_save_artifact(config)
 
 
 if __name__ == "__main__":
