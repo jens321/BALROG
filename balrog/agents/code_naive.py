@@ -30,7 +30,7 @@ class CodeNaiveAgent(BaseAgent):
         messages = self.prompt_builder.get_prompt()
 
         naive_instruction = """
-You always have to output one of the above actions at a time and no other text. You always have to output an action until the episode terminates.
+You always have to output one of the valid strategies at a time and no other text. You always have to output a strategy until the episode terminates.
         """.strip()
 
         if messages and messages[-1].role == "user":
