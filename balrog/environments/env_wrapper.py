@@ -1,5 +1,5 @@
-import gym
 from nle_code_wrapper.wrappers.nle_code_wrapper import NLECodeWrapper
+import gymnasium as gym
 
 
 class EnvWrapper(gym.Wrapper):
