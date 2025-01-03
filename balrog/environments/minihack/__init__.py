@@ -1,4 +1,5 @@
 from nle.language_wrapper.wrappers.nle_language_wrapper import NLELanguageWrapper
+
 from nle_code_wrapper.wrappers.nle_code_wrapper import NLECodeWrapper
 
 ACTIONS = {
@@ -42,6 +43,16 @@ You are an agent playing MiniHack. The following are the possible high-level act
 
 {skill_list}
 
+In each observation of the game, you will receive both a textual observation as well as a character-based one. Here is a legend for what each character represents in the character-based observation:
+    @: the player
+    #: a corridor
+    +: a closed door
+    |: a vertical wall
+    -: a horizontal wall
+    .: the floor
+    <: stairs leading up
+    >: stairs leading down
+
 In a moment I will present a history of high-level actions and observations from the game.
 
 Tip: there is no point in outputting the same action over and over if nothing changes.
@@ -50,15 +61,47 @@ PLAY!
 """
 
 STRATEGY_TO_DESC = {
-    "goto_stairs": "if the stairs leading down are visible, navigates the agent towards the stairs leading **down**",
-    "open_doors_kick": "if a door is visible, navigates the agent towards a closed door and performs one kick towards it",
-    "explore": "navigates the agent to the closest **boundary cell**, i.e. the closest cell that lies at the edge of the explored and to-be-explored areas",
-    "search": "navigates the agent to the closest promising cell that hasn't been searched as much and performs one search action, which can reveal secret doors or hidden passages",
-    "fight_closest_monster": "if a monster is visible, navigates the agent towards the closest monster and performs one attack action",
-    "run_away": "run away from any visible monsters nearby",
-    "open_doors_key": "if a door is visible, navigates the agent towards a closed door and performs one open action",
-    "pickup_key": "if a key is visible, navigates the agent towards the key and performs one pickup action",
+    "explore_corridor": "explores the corridor",
+    "explore_corridor_east": "explores the corridor to the east",
+    "explore_corridor_north": "explores the corridor to the north",
+    "explore_corridor_south": "explores the corridor to the south",
+    "explore_corridor_systematically": "explores the corridor systematically",
+    "explore_corridor_systematically_east": "explores the corridor systematically to the east",
+    "explore_corridor_systematically_north": "explores the corridor systematically to the north",
+    "explore_corridor_systematically_south": "explores the corridor systematically to the south",
+    "explore_corridor_systematically_west": "explores the corridor systematically to the west",
+    "explore_corridor_west": "explores the corridor to the west",
+    "explore_room": "explores the room",
+    "explore_room_east": "explores the room to the east",
+    "explore_room_north": "explores the room to the north",
+    "explore_room_south": "explores the room to the south",
+    "explore_room_systematically": "explores the room systematically",
+    "explore_room_systematically_east": "explores the room systematically to the east",
+    "explore_room_systematically_north": "explores the room systematically to the north",
+    "explore_room_systematically_south": "explores the room systematically to the south",
+    "explore_room_systematically_west": "explores the room systematically to the west",
+    "explore_room_west": "explores the room to the west",
+    "explore_items": "explores the items",
+    "goto_closest_corridor": "navigates the agent towards the closest corridor",
+    "goto_closest_corridor_east": "navigates the agent towards the closest corridor to the east",
+    "goto_closest_corridor_north": "navigates the agent towards the closest corridor to the north",
+    "goto_closest_corridor_south": "navigates the agent towards the closest corridor to the south",
+    "goto_closest_corridor_west": "navigates the agent towards the closest corridor to the west",
+    "goto_closest_room": "navigates the agent towards the closest room",
+    "goto_closest_room_east": "navigates the agent towards the closest room to the east",
+    "goto_closest_room_north": "navigates the agent towards the closest room to the north",
+    "goto_closest_room_south": "navigates the agent towards the closest room to the south",
+    "goto_closest_room_west": "navigates the agent towards the closest room to the west",
+    "goto_closest_staircase_down": "navigates the agent towards the closest stairs leading down",
+    "goto_closest_staircase_up": "navigates the agent towards the closest stairs leading up",
+    "goto_closest_unexplored_corridor": "navigates the agent towards the closest unexplored corridor",
+    "goto_closest_unexplored_room": "navigates the agent towards the closest unexplored room",
+    "open_doors": "opens doors",
+    "open_doors_kick": "opens doors by kicking them",
+    "search_corridor_for_hidden_doors": "searches the corridor for hidden doors",
+    "search_room_for_hidden_doors": "searches the room for hidden doors",
 }
+
 
 def get_available_actions(env):
     available_actions = {}
@@ -68,6 +111,7 @@ def get_available_actions(env):
             continue
         available_actions[action_key] = ACTIONS[action_key]
     return available_actions
+
 
 def get_goal_from_task_name(task: str):
     if "corridor" in task.lower():
@@ -95,7 +139,7 @@ def get_instruction_prompt(env, task="MiniHack-ExploreMaze-Hard-Mapped-v0"):
         strategies = [s.__name__ for s in env.bot.strategies]
         skill_list = ""
         for idx, s in enumerate(strategies, 1):
-            skill_list += f"({idx}) {s}: {STRATEGY_TO_DESC[s]}\n"
+            skill_list += f"- {s}: {STRATEGY_TO_DESC[s]}\n"
         instruction_prompt = CODE_INSTRUCTION_PROMPT.format(skill_list=skill_list)
     else:
         available_actions = get_available_actions(env)
