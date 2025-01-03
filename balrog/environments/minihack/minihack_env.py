@@ -2,9 +2,9 @@ from typing import Optional
 
 import gym
 import minihack  # NOQA: F401
-
 from balrog.environments.nle import NLELanguageWrapper
 from balrog.environments.wrappers import GymV21CompatibilityV0, NLETimeLimit
+
 from nle_code_wrapper.utils.utils import get_function_by_name
 from nle_code_wrapper.wrappers.nle_code_wrapper import NLECodeWrapper
 
@@ -29,6 +29,10 @@ def make_minihack_env(env_name, task, config, render_mode: Optional[str] = None)
             "inv_strs",
             "tty_cursor",
             "tty_colors",
+            "message",
+            "tty_cursor",
+            "inv_oclasses",
+            "inv_glyphs",
         ],
         **minihack_kwargs,
     )
@@ -38,7 +42,7 @@ def make_minihack_env(env_name, task, config, render_mode: Optional[str] = None)
     env = NLETimeLimit(env)
 
     env = GymV21CompatibilityV0(env=env, render_mode=render_mode)
-    
+
     strategies = []
     for strategy_name in config.strategies:
         strategy_func = get_function_by_name(config.strategies_loc, strategy_name)
