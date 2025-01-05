@@ -83,10 +83,10 @@ class HistoryPromptBuilder:
         """
         messages = []
         if self.system_prompt:
-            messages.append(Message(role="user", content=self.system_prompt))
+            messages.append(Message(role="system", content=self.system_prompt))
 
-        if self.system_prompt and not icl_episodes:
-            messages.append(Message(role="user", content=self.system_prompt))
+        # if self.system_prompt and not icl_episodes:
+        #     messages.append(Message(role="system", content=self.system_prompt))
 
         # Determine which images to include
         images_needed = self.max_image_history
