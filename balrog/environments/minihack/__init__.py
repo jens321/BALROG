@@ -60,6 +60,25 @@ Tip: there is no point in outputting the same action over and over if nothing ch
 PLAY!
 """
 
+DESC = {
+    "goto_corridor": "Moves the bot to the closest corridor in any direction.",
+    "goto_corridor_north": "Moves the bot to the closest corridor to the north.",
+    "goto_corridor_south": "Moves the bot to the closest corridor to the south.",
+    "goto_corridor_east": "Moves the bot to the closest corridor to the east.",
+    "goto_corridor_west": "Moves the bot to the closest corridor to the west.",
+
+    "goto_room": "Moves the bot to the closest room in any direction.",
+    "goto_room_north": "Moves the bot to the closest room to the north.",
+    "goto_room_south": "Moves the bot to the closest room to the south.",
+    "goto_room_east": "Moves the bot to the closest room to the east.",
+    "goto_room_west": "Moves the bot to the closest room to the west.",
+
+    "explore_room": "Moves to the closest tile in any direction that might reveal new areas in the current room. Only works if you're in a room.",
+    "explore_room_north": "Moves to the closest tile north of you that might reveal new areas in the current room. Only works if you're in a room.",
+    "explore_room_south": "Moves to the closest tile south of you that might reveal new areas in the current room. Only works if you're in a room.",
+    "explore_room_east": "Moves to the closest tile east of you that might reveal new areas in the current room. Only works if you're in a room.",
+    "explore_room_west": "Moves to the closest tile west of you that might reveal new areas in the current room. Only works if you're in a room.",
+}
 
 def get_available_actions(env):
     available_actions = {}
@@ -97,7 +116,7 @@ def get_instruction_prompt(env, task="MiniHack-ExploreMaze-Hard-Mapped-v0"):
         strategies = [s.__name__ for s in env.bot.strategies]
         skill_list = ""
         for idx, s in enumerate(strategies, 1):
-            skill_list += f"- {s}\n"
+            skill_list += f"- {s}: {DESC[s]}\n"
         instruction_prompt = CODE_INSTRUCTION_PROMPT.format(skill_list=skill_list)
     else:
         available_actions = get_available_actions(env)
